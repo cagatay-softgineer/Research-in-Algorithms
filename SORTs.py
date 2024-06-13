@@ -135,6 +135,45 @@ def countSort(input_array):
         count_array[input_array[i]] -= 1
  
     return output_array
+
+
+# Radix SORT
+
+def countingSort(arr, exp1):
+
+    n = len(arr)
+
+    output = [0] * (n)
+
+    count = [0] * (10)
+
+    for i in range(0, n):
+        index = arr[i] // exp1
+        count[index % 10] += 1
+
+    for i in range(1, 10):
+        count[i] += count[i - 1]
+
+    i = n - 1
+    while i >= 0:
+        index = arr[i] // exp1
+        output[count[index % 10] - 1] = arr[i]
+        count[index % 10] -= 1
+        i -= 1
+        
+    i = 0
+    for i in range(0, len(arr)):
+        arr[i] = output[i]
+
+def radixSort(arr):
+    arr = arr.copy()
+    max1 = max(arr)
+    
+    exp = 1
+    while max1 / exp >= 1:
+        countingSort(arr, exp)
+        exp *= 10
+    return arr
             
 if TIME_IT_ALGORITMS:
     print("\n###############\n###  TIMEs  ###\n###############\n")
@@ -145,6 +184,8 @@ if TIME_IT_ALGORITMS:
     print(f"SHELL_SORT took {util.Calc_time(shellSort,TEST_ARR,100)} seconds")
     print(f"QUICK_SORT took {util.Calc_time(quickSort,TEST_ARR,100)} seconds")
     print(f"SELECTION_SORT took {util.Calc_time(selectionSort,TEST_ARR,100)} seconds")
+    print(f"COUNT_SORT took {util.Calc_time(countSort,TEST_ARR,100)} seconds")
+    print(f"RADIX_SORT took {util.Calc_time(radixSort,TEST_ARR,100)} seconds")
 
 
 if PRINT_RESULT:
