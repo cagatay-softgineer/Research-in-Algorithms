@@ -68,14 +68,15 @@ def shellSort(arr):
         for i in range(gap, len(arr)):
             temp = arr[i]
             j = i
-    while j >= gap and arr[j - gap] > temp:
-        arr[j] = arr[j - gap]
-        j = j - gap
-        arr[j] = temp
-    gap = gap // 2 
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j = j - gap
+            arr[j] = temp
+        gap = gap // 2 
+    return arr
 
 print(f"TEST ARRAY\n{TEST_ARR}\n\n")
 print(f"BUBBLE SORT\n{bubbleSort(TEST_ARR)}\n\n")
 print(f"MERGE SORT\n{mergeSort(TEST_ARR)}\n\n")
 print(f"INSERTION SORT\n{insertionSort(TEST_ARR)}\n\n")
-# print(f"SHELL SORT\n{shellSort(TEST_ARR)}\n\n") Infinite While Loop RN Fix on Way
+print(f"SHELL SORT\n{shellSort(TEST_ARR)}\n\n")
