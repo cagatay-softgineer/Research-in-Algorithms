@@ -1,6 +1,12 @@
 import random
+from functools import partial
+import timeit
 
-ARR_LEN = 10
+PRINT_RESULT = False
+PRINT_DETAILS_ABOUT_ALGORITHMS = False
+TIME_IT_ALGORITMS = True
+
+ARR_LEN = 1000
 MIN_VALUE = 1
 MAX_VALUE = 10000 
 
@@ -11,7 +17,8 @@ TEST_ARR = [random.randint(MIN_VALUE, MAX_VALUE) for _ in range(ARR_LEN)]
 
 def bubbleSort(arr):
     arr = arr.copy()
-    for i in range(len(arr)-1,0,-1):
+    len_arr = len(arr)
+    for i in range(len_arr-1,0,-1):
         for idx in range(i):
             if arr[idx] > arr[idx+1]:
                 temp = arr[idx]
@@ -24,9 +31,10 @@ def bubbleSort(arr):
 
 def mergeSort(arr):
     arr = arr.copy()
-    if len(arr) <= 1:
+    len_arr = len(arr)
+    if len_arr <= 1:
         return arr
-    middle = len(arr) // 2
+    middle = len_arr // 2
     left_arr = arr[:middle]
     right_arr = arr[middle:]
     
@@ -52,7 +60,8 @@ def merge(left_half,right_half):
 
 def insertionSort(arr):
     arr = arr.copy()
-    for i in range(1, len(arr)):
+    len_arr = len(arr)
+    for i in range(1, len_arr):
         j = i - 1
         next_element = arr[i]
         
@@ -67,9 +76,10 @@ def insertionSort(arr):
 
 def shellSort(arr):
     arr = arr.copy()
-    gap = len(arr) // 2
+    len_arr = len(arr)
+    gap = len_arr // 2
     while gap > 0:
-        for i in range(gap, len(arr)):
+        for i in range(gap, len_arr):
             temp = arr[i]
             j = i
             while j >= gap and arr[j - gap] > temp:
@@ -84,9 +94,10 @@ def shellSort(arr):
 
 def quickSort(arr):
     arr = arr.copy()
-    if len(arr) <= 1:
+    len_arr = len(arr)
+    if len_arr <= 1:
         return arr
-    pivot = arr[len(arr) // 2]
+    pivot = arr[len_arr // 2]
     left = [x for x in arr if x < pivot]
     middle = [x for x in arr if x == pivot]
     right = [x for x in arr if x > pivot]
@@ -106,12 +117,49 @@ def selectionSort(arr):
         arr[i], arr[min_idx] = arr[min_idx],arr[i]
     return arr
             
+if TIME_IT_ALGORITMS:
+    print("\n###############\n###  TIMEs  ###\n###############\n")
+    BUBBLE_SORT = partial(bubbleSort, TEST_ARR)
+    MERGE_SORT = partial(mergeSort, TEST_ARR)
+    INSERTION_SORT = partial(insertionSort, TEST_ARR)
+    SHELL_SORT = partial(shellSort, TEST_ARR)
+    QUICK_SORT = partial(quickSort, TEST_ARR)
+    SELECTION_SORT = partial(selectionSort, TEST_ARR)
+
+    time_method1 = timeit.timeit(BUBBLE_SORT, number=100)
+    print(f"BUBBLE_SORT took {time_method1:.24f} seconds")
+
+    time_method2 = timeit.timeit(MERGE_SORT, number=100)
+    print(f"MERGE_SORT took {time_method2:.24f} seconds")
+
+    time_method3 = timeit.timeit(INSERTION_SORT, number=100)
+    print(f"INSERTION_SORT took {time_method3:.24f} seconds")
+
+    time_method4 = timeit.timeit(SHELL_SORT, number=100)
+    print(f"SHELL_SORT took {time_method4:.24f} seconds")
+
+    time_method5 = timeit.timeit(QUICK_SORT, number=100)
+    print(f"QUICK_SORT took {time_method5:.24f} seconds")
+
+    time_method6 = timeit.timeit(SELECTION_SORT, number=100)
+    print(f"SELECTION_SORT took {time_method6:.24f} seconds")
 
 
-print(f"TEST ARRAY\n{TEST_ARR}\n\n")
-print(f"BUBBLE SORT\n{bubbleSort(TEST_ARR)}\n\n")
-print(f"MERGE SORT\n{mergeSort(TEST_ARR)}\n\n")
-print(f"INSERTION SORT\n{insertionSort(TEST_ARR)}\n\n")
-print(f"SHELL SORT\n{shellSort(TEST_ARR)}\n\n")
-print(f"QUICK SORT\n{quickSort(TEST_ARR)}\n\n")
-print(f"SELECTION SORT\n{selectionSort(TEST_ARR)}\n\n")
+if PRINT_RESULT:
+    print("\n###############\n###  SORTs  ###\n###############\n")
+    print(f"TEST ARRAY\n{TEST_ARR}\n\n")
+    print(f"BUBBLE SORT\n{bubbleSort(TEST_ARR)}\n\n")
+    print(f"MERGE SORT\n{mergeSort(TEST_ARR)}\n\n")
+    print(f"INSERTION SORT\n{insertionSort(TEST_ARR)}\n\n")
+    print(f"SHELL SORT\n{shellSort(TEST_ARR)}\n\n")
+    print(f"QUICK SORT\n{quickSort(TEST_ARR)}\n\n")
+    print(f"SELECTION SORT\n{selectionSort(TEST_ARR)}\n\n") 
+    
+if PRINT_DETAILS_ABOUT_ALGORITHMS:
+    print("\n###############\n### DETAILS ###\n###############\n")
+    print("-BUBBLE SORT-\nBest Case: 𝑂(𝑛) - when the array is already sorted.\nAverage Case: 𝑂(𝑛^2)\nWorst Case:: 𝑂(𝑛^2)\n")
+    print("-MERGE SORT-\nBest Case: 𝑂(𝑛 log 𝑛)\nAverage Case: 𝑂(𝑛 log 𝑛)\nWorst Case:: 𝑂(𝑛 log 𝑛)\n")
+    print("-INSERTION SORT-\nBest Case: 𝑂(𝑛) - when the array is already sorted.\nAverage Case: 𝑂(𝑛^2)\nWorst Case:: 𝑂(𝑛^2)\n")
+    print("-SHELL SORT-\nBest Case: 𝑂(𝑛 log 𝑛) - depends on the gap sequence\nAverage Case: 𝑂(𝑛^(3/2)) - depends on the gap sequence, can be better with specific sequences\nWorst Case:: 𝑂(𝑛^2) - depends on the gap sequence\n")
+    print("-QUICK SORT-\nBest Case: 𝑂(𝑛 log 𝑛)\nAverage Case: 𝑂(𝑛 log 𝑛)\nWorst Case:: 𝑂(𝑛^2) - when the pivot selection is poor (e.g., always picking the smallest or largest element as the pivot in a sorted or reverse sorted array)\n")
+    print("-SELECTION SORT-\nBest Case: 𝑂(𝑛^2)\nAverage Case: 𝑂(𝑛^2)\nWorst Case:: 𝑂(𝑛^2)\n")
