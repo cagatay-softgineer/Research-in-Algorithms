@@ -1,6 +1,8 @@
 import random
 from functools import partial
 import timeit
+import util
+
 
 PRINT_RESULT = False
 PRINT_DETAILS_ABOUT_ALGORITHMS = False
@@ -119,30 +121,13 @@ def selectionSort(arr):
             
 if TIME_IT_ALGORITMS:
     print("\n###############\n###  TIMEs  ###\n###############\n")
-    BUBBLE_SORT = partial(bubbleSort, TEST_ARR)
-    MERGE_SORT = partial(mergeSort, TEST_ARR)
-    INSERTION_SORT = partial(insertionSort, TEST_ARR)
-    SHELL_SORT = partial(shellSort, TEST_ARR)
-    QUICK_SORT = partial(quickSort, TEST_ARR)
-    SELECTION_SORT = partial(selectionSort, TEST_ARR)
-
-    time_method1 = timeit.timeit(BUBBLE_SORT, number=100)
-    print(f"BUBBLE_SORT took {time_method1:.24f} seconds")
-
-    time_method2 = timeit.timeit(MERGE_SORT, number=100)
-    print(f"MERGE_SORT took {time_method2:.24f} seconds")
-
-    time_method3 = timeit.timeit(INSERTION_SORT, number=100)
-    print(f"INSERTION_SORT took {time_method3:.24f} seconds")
-
-    time_method4 = timeit.timeit(SHELL_SORT, number=100)
-    print(f"SHELL_SORT took {time_method4:.24f} seconds")
-
-    time_method5 = timeit.timeit(QUICK_SORT, number=100)
-    print(f"QUICK_SORT took {time_method5:.24f} seconds")
-
-    time_method6 = timeit.timeit(SELECTION_SORT, number=100)
-    print(f"SELECTION_SORT took {time_method6:.24f} seconds")
+    
+    print(f"BUBBLE_SORT took {util.Calc_time(bubbleSort,TEST_ARR,100)} seconds")
+    print(f"MERGE_SORT took {util.Calc_time(mergeSort,TEST_ARR,100)} seconds")
+    print(f"INSERTION_SORT took {util.Calc_time(insertionSort,TEST_ARR,100)} seconds")
+    print(f"SHELL_SORT took {util.Calc_time(shellSort,TEST_ARR,100)} seconds")
+    print(f"QUICK_SORT took {util.Calc_time(quickSort,TEST_ARR,100)} seconds")
+    print(f"SELECTION_SORT took {util.Calc_time(selectionSort,TEST_ARR,100)} seconds")
 
 
 if PRINT_RESULT:
