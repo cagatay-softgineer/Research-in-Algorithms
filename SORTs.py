@@ -6,6 +6,7 @@ MAX_VALUE = 10000
 
 TEST_ARR = [random.randint(MIN_VALUE, MAX_VALUE) for _ in range(ARR_LEN)]
 
+
 # Bubble SORT
 
 def bubbleSort(arr):
@@ -17,6 +18,7 @@ def bubbleSort(arr):
                 arr[idx] = arr[idx+1]
                 arr[idx+1] = temp
     return arr
+
 
 # Merge SORT
 
@@ -45,6 +47,7 @@ def merge(left_half,right_half):
         res = res + left_half
     return res
 
+
 # Insertion SORT
 
 def insertionSort(arr):
@@ -58,6 +61,7 @@ def insertionSort(arr):
             j = j - 1
         arr[j+1] = next_element
     return arr 
+
 
 # Shell SORT
 
@@ -75,8 +79,39 @@ def shellSort(arr):
         gap = gap // 2 
     return arr
 
+
+# Quick SORT
+
+def quickSort(arr):
+    arr = arr.copy()
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quickSort(left) + middle + quickSort(right)
+
+
+# Selection SORT
+
+def selectionSort(arr):
+    arr = arr.copy()
+    len_arr = len(arr)
+    for i in range(len_arr):
+        min_idx = i
+        for j in range(i+1, len_arr):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        arr[i], arr[min_idx] = arr[min_idx],arr[i]
+    return arr
+            
+
+
 print(f"TEST ARRAY\n{TEST_ARR}\n\n")
 print(f"BUBBLE SORT\n{bubbleSort(TEST_ARR)}\n\n")
 print(f"MERGE SORT\n{mergeSort(TEST_ARR)}\n\n")
 print(f"INSERTION SORT\n{insertionSort(TEST_ARR)}\n\n")
 print(f"SHELL SORT\n{shellSort(TEST_ARR)}\n\n")
+print(f"QUICK SORT\n{quickSort(TEST_ARR)}\n\n")
+print(f"SELECTION SORT\n{selectionSort(TEST_ARR)}\n\n")
