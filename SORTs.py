@@ -1,6 +1,4 @@
 import random
-from functools import partial
-import timeit
 import util
 
 
