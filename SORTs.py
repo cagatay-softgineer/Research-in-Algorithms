@@ -1,5 +1,7 @@
 import random
 import util
+import time
+import threading
 
 
 PRINT_RESULT = False
@@ -15,7 +17,6 @@ TEST_ARR = [random.randint(MIN_VALUE, MAX_VALUE) for _ in range(ARR_LEN)]
 # Bubble SORT
 
 def bubbleSort(arr):
-    arr = arr.copy()
     len_arr = len(arr)
     for i in range(len_arr-1,0,-1):
         for idx in range(i):
@@ -29,7 +30,6 @@ def bubbleSort(arr):
 # Merge SORT
 
 def mergeSort(arr):
-    arr = arr.copy()
     len_arr = len(arr)
     if len_arr <= 1:
         return arr
@@ -39,9 +39,9 @@ def mergeSort(arr):
     
     left_arr = mergeSort(left_arr)
     right_arr = mergeSort(right_arr)
-    return list(merge(left_arr,right_arr))
+    return list(merge_halfs(left_arr,right_arr))
 
-def merge(left_half,right_half):
+def merge_halfs(left_half,right_half):
     res = []
     while len(left_half) > 0 and len(right_half) > 0:
         if left_half[0] < right_half[0]:
@@ -58,23 +58,19 @@ def merge(left_half,right_half):
 # Insertion SORT
 
 def insertionSort(arr):
-    arr = arr.copy()
-    len_arr = len(arr)
-    for i in range(1, len_arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
         j = i - 1
-        next_element = arr[i]
-        
-        while (arr[j] > next_element) and (j >= 0):
-            arr[j+1] = arr[j]
-            j = j - 1
-        arr[j+1] = next_element
-    return arr 
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+    return arr
 
 
 # Shell SORT
 
 def shellSort(arr):
-    arr = arr.copy()
     len_arr = len(arr)
     gap = len_arr // 2
     while gap > 0:
@@ -92,7 +88,6 @@ def shellSort(arr):
 # Quick SORT
 
 def quickSort(arr):
-    arr = arr.copy()
     len_arr = len(arr)
     if len_arr <= 1:
         return arr
@@ -106,7 +101,6 @@ def quickSort(arr):
 # Selection SORT
 
 def selectionSort(arr):
-    arr = arr.copy()
     len_arr = len(arr)
     for i in range(len_arr):
         min_idx = i
@@ -166,7 +160,6 @@ def countingSort(arr, exp1):
         arr[i] = output[i]
 
 def radixSort(arr):
-    arr = arr.copy()
     max1 = max(arr)
     
     exp = 1
@@ -174,29 +167,467 @@ def radixSort(arr):
         countingSort(arr, exp)
         exp *= 10
     return arr
+
+
+# Bucket SORT
+
+def bucketSort(arr):
+    n = len(arr)
+    buckets = [[] for _ in range(n)]
+
+    # Distribute elements into buckets
+    for num in arr:
+        bi = int(n * num)
+        
+        # Ensure bi is within valid range
+        if bi >= n:
+            bi = n - 1
+        
+        buckets[bi].append(num)
+
+    # Sort each bucket using insertion sort
+    for i in range(n):
+        insertionSort(buckets[i])
+
+    # Concatenate sorted buckets back into arr
+    index = 0
+    for i in range(n):
+        for num in buckets[i]:
+            arr[index] = num
+            index += 1
+
+    return arr
+
+
+# Bingo SORT
+
+def bingoSort(arr):
+    bingo = min(arr)
+
+    largest = max(arr)
+    nextBingo = largest
+    nextPos = 0
+    while bingo < nextBingo:
+
+        startPos = nextPos
+        for i in range(startPos, len(arr)):
+            if arr[i] == bingo:
+                arr[i], arr[nextPos] = arr[nextPos], arr[i]
+                nextPos += 1
+
+            elif arr[i] < nextBingo:
+                nextBingo = arr[i]
+        bingo = nextBingo
+        nextBingo = largest
+
+    return arr
             
+            
+# Pigeonhole SORT
+
+def pigeonholeSort(arr):
+    my_min = min(arr)
+    my_max = max(arr)
+    size = my_max - my_min + 1
+
+    holes = [0] * size
+
+    for x in arr:
+        assert isinstance(x,int), "integers only please"
+        holes[x - my_min] += 1
+
+    i = 0
+    for count in range(size):
+        while holes[count] > 0:
+            holes[count] -= 1
+            arr[i] = count + my_min
+            i += 1
+            
+    return arr
+
+
+# Cycle SORT
+
+def cycleSort(arr):
+    writes = 0
+
+    for cycleStart in range(0, len(arr) - 1):
+      item = arr[cycleStart]
+
+      pos = cycleStart
+      for i in range(cycleStart + 1, len(arr)):
+        if arr[i] < item:
+          pos += 1
+
+      if pos == cycleStart:
+        continue
+
+      while item == arr[pos]:
+        pos += 1
+      arr[pos], item = item, arr[pos]
+      writes += 1
+
+      while pos != cycleStart:
+
+        pos = cycleStart
+        for i in range(cycleStart + 1, len(arr)):
+          if arr[i] < item:
+            pos += 1
+
+        while item == arr[pos]:
+          pos += 1
+        arr[pos], item = item, arr[pos]
+        writes += 1
+    
+    return arr
+
+
+# Cocktail SORT
+
+def cocktailSort(arr):
+    n = len(arr)
+    swapped = True
+    start = 0
+    end = n-1
+    while (swapped is True):
+        swapped = False
+
+        for i in range(start, end):
+            if (arr[i] > arr[i + 1]):
+                arr[i], arr[i + 1] = arr[i + 1], arr[i]
+                swapped = True
+                
+        if (swapped is False):
+            break
+        swapped = False
+        end = end-1
+
+        for i in range(end-1, start-1, -1):
+            if (arr[i] > arr[i + 1]):
+                arr[i], arr[i + 1] = arr[i + 1], arr[i]
+                swapped = True
+
+        start = start + 1
+    return arr
+    
+    
+# Strand SORT
+
+def strandSort(arr):
+    def merge_lists(list1, list2): 
+        result = [] 
+        while list1 and list2: 
+            if list1[0] < list2[0]: 
+                result.append(list1.pop(0)) 
+            else: 
+                result.append(list2.pop(0)) 
+        result += list1 
+        result += list2 
+        return result 
+
+    if len(arr) <= 1: 
+        return arr 
+    sublist = [arr.pop(0)] 
+    i = 0
+    
+    while i < len(arr): 
+        if arr[i] > sublist[-1]: 
+            sublist.append(arr.pop(i)) 
+        else: 
+            i += 1
+    sorted_sublist = sublist 
+    remaining_list = strandSort(arr) 
+
+    return merge_lists(sorted_sublist, remaining_list) 
+
+
+# Bitonic SORT
+
+def compAndSwap(arr, i, j, dire):
+    if arr is None or len(arr) == 0:
+        return
+    
+    if (dire == 1 and arr[i] > arr[j]) or (dire == 0 and arr[i] < arr[j]):
+        arr[i], arr[j] = arr[j], arr[i]
+
+def bitonicMerge(arr, low, cnt, dire):
+    if cnt > 1:
+        k = cnt//2
+        for i in range(low , low+k):
+            arr = compAndSwap(arr, i, i+k, dire)
+        bitonicMerge(arr, low, k, dire)
+        bitonicMerge(arr, low+k, k, dire)
+ 
+def bitonicSort(arr,low = 0, cnt = None,dire = 1):
+    if cnt is None:
+        cnt = len(arr)
+        
+    if cnt > 1:
+          k = cnt//2
+          bitonicSort(arr, low, k, 1)
+          bitonicSort(arr, low+k, k, 0)
+          bitonicMerge(arr, low, cnt, dire)
+    return arr
+
+
+# Pancake SORT
+
+def flip(arr, i):
+    start = 0
+    while start < i:
+        temp = arr[start]
+        arr[start] = arr[i]
+        arr[i] = temp
+        start += 1
+        i -= 1
+    return arr
+
+def findMax(arr, n):
+    mi = 0
+    for i in range(0,n):
+        if arr[i] > arr[mi]:
+            mi = i
+    return mi
+
+def pancakeSort(arr):
+    curr_size = len(arr)
+    while curr_size > 1:
+        mi = findMax(arr, curr_size)
+        if mi != curr_size-1:
+            arr = flip(arr, mi)
+            arr = flip(arr, curr_size-1)
+        curr_size -= 1
+    return arr
+
+
+# Bogo SORT
+
+def bogoSort(arr):
+    start_time = time.time()
+    time_limit = min(len(arr) // 10,10)
+    while (not is_sorted(arr)):
+        if time.time() - start_time > time_limit:
+            return ("Time limit exceeded")
+        random.shuffle(arr)
+    
+    return arr
+
+def is_sorted(arr):
+    n = len(arr)
+    for i in range(0, n-1):
+        if (arr[i] > arr[i+1]):
+            return False
+    return True
+ 
+def shuffle(arr):
+    n = len(arr)
+    for i in range(0, n):
+        r = random.randint(0, n-1)
+        arr[i], arr[r] = arr[r], arr[i]
+        
+        
+# Gnome SORT
+
+def gnomeSort(arr):
+    n = len(arr)
+    index = 0
+    while index < n: 
+        if index == 0: 
+            index = index + 1
+        if arr[index] >= arr[index - 1]: 
+            index = index + 1
+        else: 
+            arr[index], arr[index-1] = arr[index-1], arr[index] 
+            index = index - 1
+  
+    return arr 
+
+# Sleep SORT
+
+def routine(num, result_list):
+    time.sleep(num / 100_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000.0)
+    result_list.append(num)
+
+def sleepSort(arr):
+    threads = []
+    result = []
+
+    for num in arr:
+        thread = threading.Thread(target=routine, args=(num, result))
+        threads.append(thread)
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+    return result
+        
+
+# Stooge SORT
+
+def stoogeSort(arr, l=0, h=None):  # noqa: E741
+    if h is None:
+        h = len(arr) - 1
+    if l >= h: 
+        return
+    if arr[l]>arr[h]: 
+        t = arr[l] 
+        arr[l] = arr[h] 
+        arr[h] = t 
+    if h-l + 1 > 2: 
+        t = (int)((h-l + 1)/3) 
+        stoogeSort(arr, l, (h-t)) 
+        stoogeSort(arr, l + t, (h)) 
+        stoogeSort(arr, l, (h-t))
+        
+
+# Odd Even SORT
+
+def oddEvenSort(arr):
+    n = len(arr)
+    isSorted = 0
+    while isSorted == 0:
+        isSorted = 1
+        for i in range(1, n-1, 2):
+            if arr[i] > arr[i+1]:
+                arr[i], arr[i+1] = arr[i+1], arr[i]
+                isSorted = 0
+                 
+        for i in range(0, n-1, 2):
+            if arr[i] > arr[i+1]:
+                arr[i], arr[i+1] = arr[i+1], arr[i]
+                isSorted = 0
+     
+    return
+
+
+# 3-Way Merge SORT
+
+def merge(gArray, low, mid1, mid2, high, destArray):
+    i = low
+    j = mid1
+    k = mid2
+    l = low  # noqa: E741
+
+    while ((i < mid1) and (j < mid2) and (k < high)):
+        if(gArray[i] < gArray[j]):
+            if(gArray[i] < gArray[k]):
+                destArray[l] = gArray[i]
+                l += 1  # noqa: E741
+                i += 1
+            else:
+                destArray[l] = gArray[k]
+                l += 1  # noqa: E741
+                k += 1
+        else:
+            if(gArray[j] < gArray[k]):
+                destArray[l] = gArray[j]
+                l += 1  # noqa: E741
+                j += 1
+            else:
+                destArray[l] = gArray[k]
+                l += 1  # noqa: E741
+                k += 1
+
+    while ((i < mid1) and (j < mid2)):
+        if(gArray[i] < gArray[j]):
+            destArray[l] = gArray[i]
+            l += 1  # noqa: E741
+            i += 1
+        else:
+            destArray[l] = gArray[j]
+            l += 1  # noqa: E741
+            j += 1
+
+    while ((j < mid2) and (k < high)):
+        if(gArray[j] < gArray[k]):
+            destArray[l] = gArray[j]
+            l += 1  # noqa: E741
+            j += 1
+        else:
+            destArray[l] = gArray[k]
+            l += 1  # noqa: E741
+            k += 1
+
+    while ((i < mid1) and (k < high)):
+        if(gArray[i] < gArray[k]):
+            destArray[l] = gArray[i]
+            l += 1  # noqa: E741
+            i += 1
+        else:
+            destArray[l] = gArray[k]
+            l += 1  # noqa: E741
+            k += 1
+
+    while (i < mid1):
+        destArray[l] = gArray[i]
+        l += 1  # noqa: E741
+        i += 1
+ 
+    while (j < mid2):
+        destArray[l] = gArray[j]
+        l += 1  # noqa: E741
+        j += 1
+
+    while (k < high):
+        destArray[l] = gArray[k]
+        l += 1  # noqa: E741
+        k += 1
+ 
+ 
+def mergeSort3WayRec(gArray, low, high, destArray):
+
+    if (high - low < 2):
+        return
+
+    mid1 = low + ((high - low) // 3)
+    mid2 = low + 2 * ((high - low) // 3) + 1
+
+    mergeSort3WayRec(destArray, low, mid1, gArray)
+    mergeSort3WayRec(destArray, mid1, mid2, gArray)
+    mergeSort3WayRec(destArray, mid2, high, gArray)
+
+    merge(destArray, low, mid1, mid2, high, gArray)
+ 
+ 
+def mergeSort3Way(gArray):
+    n = len(gArray)
+    if (n == 0):
+        return
+    fArray = []
+    fArray = gArray.copy()
+    mergeSort3WayRec(fArray, 0, n, gArray)
+    gArray = fArray.copy()
+
+    return gArray
+        
 if TIME_IT_ALGORITMS:
     print("\n###############\n###  TIMEs  ###\n###############\n")
     
-    print(f"BUBBLE_SORT took {util.Calc_time(bubbleSort,TEST_ARR,100)} seconds")
-    print(f"MERGE_SORT took {util.Calc_time(mergeSort,TEST_ARR,100)} seconds")
-    print(f"INSERTION_SORT took {util.Calc_time(insertionSort,TEST_ARR,100)} seconds")
-    print(f"SHELL_SORT took {util.Calc_time(shellSort,TEST_ARR,100)} seconds")
-    print(f"QUICK_SORT took {util.Calc_time(quickSort,TEST_ARR,100)} seconds")
-    print(f"SELECTION_SORT took {util.Calc_time(selectionSort,TEST_ARR,100)} seconds")
-    print(f"COUNT_SORT took {util.Calc_time(countSort,TEST_ARR,100)} seconds")
-    print(f"RADIX_SORT took {util.Calc_time(radixSort,TEST_ARR,100)} seconds")
-
+    SORT_ALGORITHMS=[bubbleSort,mergeSort,insertionSort,shellSort
+                     ,quickSort,selectionSort,countSort,radixSort,
+                     bucketSort,bingoSort,pigeonholeSort,cycleSort,
+                     cocktailSort,strandSort,bitonicSort,pancakeSort,
+                     gnomeSort,oddEvenSort,mergeSort3Way,sleepSort]
+    for method in SORT_ALGORITHMS:
+        method_name = method.__name__
+        sort_index = method_name.find("Sort")
+        print(f"{method_name[:sort_index].capitalize()} {method_name[sort_index:]} took {util.Calc_time(method,TEST_ARR.copy(),100)} seconds")
 
 if PRINT_RESULT:
     print("\n###############\n###  SORTs  ###\n###############\n")
     print(f"TEST ARRAY\n{TEST_ARR}\n\n")
-    print(f"BUBBLE SORT\n{bubbleSort(TEST_ARR)}\n\n")
-    print(f"MERGE SORT\n{mergeSort(TEST_ARR)}\n\n")
-    print(f"INSERTION SORT\n{insertionSort(TEST_ARR)}\n\n")
-    print(f"SHELL SORT\n{shellSort(TEST_ARR)}\n\n")
-    print(f"QUICK SORT\n{quickSort(TEST_ARR)}\n\n")
-    print(f"SELECTION SORT\n{selectionSort(TEST_ARR)}\n\n") 
+    SORT_ALGORITHMS=[bubbleSort,mergeSort,insertionSort,shellSort
+                     ,quickSort,selectionSort,countSort,radixSort,
+                     bucketSort,bingoSort,pigeonholeSort,cycleSort,
+                     cocktailSort,strandSort,bitonicSort,pancakeSort,
+                     bogoSort,gnomeSort,sleepSort,stoogeSort,oddEvenSort,mergeSort3Way]
+    for method in SORT_ALGORITHMS:
+        method_name = method.__name__
+        sort_index = method_name.find("Sort")
+        print(f"{method_name[:sort_index].capitalize()} {method_name[sort_index:]} \n{method(TEST_ARR.copy())}\n\n")
+        
+    print(f"TEST ARRAY\n{TEST_ARR}\n\n")
     
 if PRINT_DETAILS_ABOUT_ALGORITHMS:
     print("\n###############\n### DETAILS ###\n###############\n")
