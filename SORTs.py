@@ -1,6 +1,6 @@
 import random
 
-ARR_LEN = 1000
+ARR_LEN = 100
 MIN_VALUE = 1
 MAX_VALUE = 10000 
 
@@ -9,6 +9,7 @@ TEST_ARR = [random.randint(MIN_VALUE, MAX_VALUE) for _ in range(ARR_LEN)]
 # Bubble SORT
 
 def bubbleSort(arr):
+    arr = arr.copy()
     for i in range(len(arr)-1,0,-1):
         for idx in range(i):
             if arr[idx] > arr[idx+1]:
@@ -20,6 +21,7 @@ def bubbleSort(arr):
 # Merge SORT
 
 def mergeSort(arr):
+    arr = arr.copy()
     if len(arr) <= 1:
         return arr
     middle = len(arr) // 2
@@ -42,3 +44,22 @@ def merge(left_half,right_half):
     else:
         res = res + left_half
     return res
+
+# Insertion SORT
+
+def insertionSort(arr):
+    arr = arr.copy()
+    for i in range(1, len(arr)):
+        j = i - 1
+        next_element = arr[i]
+        
+        while (arr[j] > next_element) and (j >= 0):
+            arr[j+1] = arr[j]
+            j = j - 1
+        arr[j+1] = next_element
+    return arr 
+
+print(f"TEST ARRAY\n{TEST_ARR}\n\n")
+print(f"BUBBLE SORT\n{bubbleSort(TEST_ARR)}\n\n")
+print(f"MERGE SORT\n{mergeSort(TEST_ARR)}\n\n")
+print(f"INSERTION SORT\n{insertionSort(TEST_ARR)}\n\n")
