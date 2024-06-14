@@ -15,6 +15,10 @@ MAX_VALUE = 100
 
 TEST_ARR = [random.randint(MIN_VALUE, MAX_VALUE) for _ in range(ARR_LEN)]
 
+def Create_Random_ARR(ARR_LEN = 30,MIN_VALUE = 1,MAX_VALUE = 100):
+    return [random.randint(MIN_VALUE, MAX_VALUE) for _ in range(ARR_LEN)]
+    
+
 # Bubble SORT
 
 def bubbleSort(arr):
