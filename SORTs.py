@@ -7,6 +7,7 @@ import threading
 PRINT_RESULT = False
 PRINT_DETAILS_ABOUT_ALGORITHMS = False
 TIME_IT_ALGORITMS = False
+TIME_IT_ALGORITMS_ITER_COUNT = 100
 
 ARR_LEN = 30
 MIN_VALUE = 1
@@ -610,43 +611,49 @@ def mergeSort3Way(gArray):
     gArray = fArray.copy()
 
     return gArray
-        
-if TIME_IT_ALGORITMS:
-    print("\n###############\n###  TIMEs  ###\n###############\n")
-    
-    SORT_ALGORITHMS=[bubbleSort,mergeSort,insertionSort,shellSort
-                     ,quickSort,selectionSort,countSort,radixSort,
-                     bucketSort,bingoSort,pigeonholeSort,cycleSort,
-                     cocktailSort,strandSort,bitonicSort,pancakeSort,
-                     gnomeSort,oddEvenSort,mergeSort3Way,sleepSort]
-    for method in SORT_ALGORITHMS:
-        method_name = method.__name__
-        sort_index = method_name.find("Sort")
-        print(f"{method_name[:sort_index].capitalize()} {method_name[sort_index:]} took {util.Calc_time(method,TEST_ARR.copy(),100)} seconds")
 
-if PRINT_RESULT:
-    print("\n###############\n###  SORTs  ###\n###############\n")
-    print(f"TEST ARRAY\n{TEST_ARR}\n\n")
-    SORT_ALGORITHMS=[bubbleSort,mergeSort,insertionSort,shellSort
+SORT_ALGORITHMS=[bubbleSort,mergeSort,insertionSort,shellSort
                      ,quickSort,selectionSort,countSort,radixSort,
                      bucketSort,bingoSort,pigeonholeSort,cycleSort,
                      cocktailSort,strandSort,bitonicSort,pancakeSort,
-                     bogoSort,gnomeSort,stoogeSort,
-                     oddEvenSort,mergeSort3Way,sleepSort]
+                     gnomeSort,oddEvenSort,mergeSort3Way,sleepSort,bogoSort]
+
+def getAllSortsNames():
+    S = ""
     for method in SORT_ALGORITHMS:
         method_name = method.__name__
-        sort_index = method_name.find("Sort")
-        res = method(TEST_ARR.copy())
-        print(f"{method_name[:sort_index].capitalize()} {method_name[sort_index:]} \n{res}")
-        print(f"Is {method_name[:sort_index].capitalize()} {method_name[sort_index:]} Sorted : {is_sorted(res)}\n\n")
-        
-    print(f"TEST ARRAY\n{TEST_ARR}\n\n")
+        S += f"{method_name}, "
+    return S[:-2]
+
+def main():
+    if TIME_IT_ALGORITMS:
+        print("\n###############\n###  TIMEs  ###\n###############\n")
+        for method in SORT_ALGORITHMS:
+            method_name = method.__name__
+            sort_index = method_name.find("Sort")
+            print(f"{method_name[:sort_index].capitalize()} {method_name[sort_index:]} took {util.Calc_time(method,TEST_ARR.copy(),TIME_IT_ALGORITMS_ITER_COUNT)} seconds")
+             
+    if PRINT_RESULT:
+        print("\n###############\n###  SORTs  ###\n###############\n")
+        print(f"TEST ARRAY\n{TEST_ARR}\n\n")
+        for method in SORT_ALGORITHMS:
+            method_name = method.__name__
+            sort_index = method_name.find("Sort")
+            res = method(TEST_ARR.copy())
+            print(f"{method_name[:sort_index].capitalize()} {method_name[sort_index:]} \n{res}")
+            print(f"Is {method_name[:sort_index].capitalize()} {method_name[sort_index:]} Sorted : {is_sorted(res)}\n\n")
+
+        print(f"TEST ARRAY\n{TEST_ARR}\n\n")
     
-if PRINT_DETAILS_ABOUT_ALGORITHMS:
-    print("\n###############\n### DETAILS ###\n###############\n")
-    print("-BUBBLE SORT-\nBest Case: 𝑂(𝑛) - when the array is already sorted.\nAverage Case: 𝑂(𝑛^2)\nWorst Case:: 𝑂(𝑛^2)\n")
-    print("-MERGE SORT-\nBest Case: 𝑂(𝑛 log 𝑛)\nAverage Case: 𝑂(𝑛 log 𝑛)\nWorst Case:: 𝑂(𝑛 log 𝑛)\n")
-    print("-INSERTION SORT-\nBest Case: 𝑂(𝑛) - when the array is already sorted.\nAverage Case: 𝑂(𝑛^2)\nWorst Case:: 𝑂(𝑛^2)\n")
-    print("-SHELL SORT-\nBest Case: 𝑂(𝑛 log 𝑛) - depends on the gap sequence\nAverage Case: 𝑂(𝑛^(3/2)) - depends on the gap sequence, can be better with specific sequences\nWorst Case:: 𝑂(𝑛^2) - depends on the gap sequence\n")
-    print("-QUICK SORT-\nBest Case: 𝑂(𝑛 log 𝑛)\nAverage Case: 𝑂(𝑛 log 𝑛)\nWorst Case:: 𝑂(𝑛^2) - when the pivot selection is poor (e.g., always picking the smallest or largest element as the pivot in a sorted or reverse sorted array)\n")
-    print("-SELECTION SORT-\nBest Case: 𝑂(𝑛^2)\nAverage Case: 𝑂(𝑛^2)\nWorst Case:: 𝑂(𝑛^2)\n")
+    if PRINT_DETAILS_ABOUT_ALGORITHMS:
+        print("\n###############\n### DETAILS ###\n###############\n")
+        print("-BUBBLE SORT-\nBest Case: 𝑂(𝑛) - when the array is already sorted.\nAverage Case: 𝑂(𝑛^2)\nWorst Case:: 𝑂(𝑛^2)\n")
+        print("-MERGE SORT-\nBest Case: 𝑂(𝑛 log 𝑛)\nAverage Case: 𝑂(𝑛 log 𝑛)\nWorst Case:: 𝑂(𝑛 log 𝑛)\n")
+        print("-INSERTION SORT-\nBest Case: 𝑂(𝑛) - when the array is already sorted.\nAverage Case: 𝑂(𝑛^2)\nWorst Case:: 𝑂(𝑛^2)\n")
+        print("-SHELL SORT-\nBest Case: 𝑂(𝑛 log 𝑛) - depends on the gap sequence\nAverage Case: 𝑂(𝑛^(3/2)) - depends on the gap sequence, can be better with specific sequences\nWorst Case:: 𝑂(𝑛^2) - depends on the gap sequence\n")
+        print("-QUICK SORT-\nBest Case: 𝑂(𝑛 log 𝑛)\nAverage Case: 𝑂(𝑛 log 𝑛)\nWorst Case:: 𝑂(𝑛^2) - when the pivot selection is poor (e.g., always picking the smallest or largest element as the pivot in a sorted or reverse sorted array)\n")
+        print("-SELECTION SORT-\nBest Case: 𝑂(𝑛^2)\nAverage Case: 𝑂(𝑛^2)\nWorst Case:: 𝑂(𝑛^2)\n")
+    
+    
+if __name__ == "__main__":
+    main()
