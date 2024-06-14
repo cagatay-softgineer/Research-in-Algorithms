@@ -4,13 +4,13 @@ import time
 import threading
 
 
-PRINT_RESULT = False
+PRINT_RESULT = True
 PRINT_DETAILS_ABOUT_ALGORITHMS = False
-TIME_IT_ALGORITMS = True
+TIME_IT_ALGORITMS = False
 
-ARR_LEN = 1000
+ARR_LEN = 30
 MIN_VALUE = 1
-MAX_VALUE = 10000 
+MAX_VALUE = 100 
 
 TEST_ARR = [random.randint(MIN_VALUE, MAX_VALUE) for _ in range(ARR_LEN)]
 
@@ -404,7 +404,7 @@ def pancakeSort(arr):
 
 def bogoSort(arr):
     start_time = time.time()
-    time_limit = min(len(arr) // 10,10)
+    time_limit = min(len(arr) // 10,1)
     while (not is_sorted(arr)):
         if time.time() - start_time > time_limit:
             return ("Time limit exceeded")
@@ -445,21 +445,31 @@ def gnomeSort(arr):
 # Sleep SORT
 
 def routine(num, result_list):
-    time.sleep(num / 100_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000.0)
+    global start_time
+    global time_limit
+    time.sleep(num / 10.0)
+    if time.time() - start_time > time_limit:
+            return ("Time limit exceeded")
     result_list.append(num)
 
 def sleepSort(arr):
+    global start_time
+    start_time = time.time()
+    global time_limit
+    time_limit = min(len(arr) // 10,1)
     threads = []
     result = []
-
+    s_time = time.time()
     for num in arr:
         thread = threading.Thread(target=routine, args=(num, result))
         threads.append(thread)
         thread.start()
-
+    
     for thread in threads:
+        if time.time() - s_time > time_limit:
+            return ("Time limit exceeded")
         thread.join()
-
+        
     return result
         
 
@@ -479,7 +489,7 @@ def stoogeSort(arr, l=0, h=None):  # noqa: E741
         stoogeSort(arr, l, (h-t)) 
         stoogeSort(arr, l + t, (h)) 
         stoogeSort(arr, l, (h-t))
-        
+    return arr
 
 # Odd Even SORT
 
@@ -498,7 +508,7 @@ def oddEvenSort(arr):
                 arr[i], arr[i+1] = arr[i+1], arr[i]
                 isSorted = 0
      
-    return
+    return arr
 
 
 # 3-Way Merge SORT
@@ -621,11 +631,14 @@ if PRINT_RESULT:
                      ,quickSort,selectionSort,countSort,radixSort,
                      bucketSort,bingoSort,pigeonholeSort,cycleSort,
                      cocktailSort,strandSort,bitonicSort,pancakeSort,
-                     bogoSort,gnomeSort,sleepSort,stoogeSort,oddEvenSort,mergeSort3Way]
+                     bogoSort,gnomeSort,stoogeSort,
+                     oddEvenSort,mergeSort3Way,sleepSort]
     for method in SORT_ALGORITHMS:
         method_name = method.__name__
         sort_index = method_name.find("Sort")
-        print(f"{method_name[:sort_index].capitalize()} {method_name[sort_index:]} \n{method(TEST_ARR.copy())}\n\n")
+        res = method(TEST_ARR.copy())
+        print(f"{method_name[:sort_index].capitalize()} {method_name[sort_index:]} \n{res}")
+        print(f"Is {method_name[:sort_index].capitalize()} {method_name[sort_index:]} Sorted : {is_sorted(res)}\n\n")
         
     print(f"TEST ARRAY\n{TEST_ARR}\n\n")
     
