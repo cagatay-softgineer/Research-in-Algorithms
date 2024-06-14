@@ -4,7 +4,7 @@ import time
 import threading
 
 
-PRINT_RESULT = True
+PRINT_RESULT = False
 PRINT_DETAILS_ABOUT_ALGORITHMS = False
 TIME_IT_ALGORITMS = False
 
